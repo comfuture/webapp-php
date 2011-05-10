@@ -10,8 +10,10 @@ class Controller
 	protected $app;
 	protected $route;
 
-	function __construct($name)
+	function __construct($name=null)
 	{
+		if (!$name)
+			$name = get_class();
 		$this->name = $name;
 	}
 
@@ -62,19 +64,20 @@ class Controller
 		header('Location: ' . $path);
 	}
 
-	protected function render_template($tpl, $vars)
+	protected function render_template($tpl, $vars=null)
 	{
-		if (!$this->application)
+		if (!$this->app)
 			throw new Exception("application is not set");
-		
+		if (!$vars)
+			$vars = array();
 		if (false !== strpos($tpl, ':')) {
 			//each($name, $path) 
 			$arr = explode(':', $tpl, 2);
 			$name = $arr[0]; $path = $arr[1];
-			$ctrl = $this->application->getController($name);
+			$ctrl = $this->app->getController($name);
 			$tpl = $ctrl->dirname() . '/' . $path;
 		}
-		$template = $this->app->templateEnv->load($tpl);
+		$template = $this->app->templateEnv->loadTemplate('templates/' . $tpl);
 		return $template->render($vars);
 	}
 
