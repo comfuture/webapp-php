@@ -5,33 +5,57 @@ require_once dirname(__FILE__) . '/core.php';
 
 class Application
 {
-	private $_config;
+	private $config;
 	private $dispatcher;
 	private $controllers = array();
 	private $routes = array();
 	private $beforeRequest = array();
 	private $templateEnv;
-	private $_em;
+	private $cache;
+	private $em;
 
 	function __construct($config=null)
 	{
-		$this->_config = array(
+		$this->config = array(
 		);
 		if (null != $config) {
-			$this->_config = array_merge($this->_config, $config);
+			$this->config = array_merge($this->config, $config);
 		}
-		$filesystemLoader = new \Twig_Loader_Filesystem('templates');
-		$this->templateEnv = new \Twig_Environment($filesystemLoader, array(
-			'cache' => isset($this->_config['template.cache.dir'])
-				? $this->_config['template.cache.dir']
-				: null
-		));
-		$this->templateEnv->addExtension(new WebApp_Twig_Extension());
 
-		if (isset($this->_config['database'])) {
+		if (isset($this->config['system.template'])) {
+			$filesystemLoader = new \Twig_Loader_Filesystem('./');
+			$this->templateEnv = new \Twig_Environment($filesystemLoader, array(
+				'cache' => isset($this->config['template.cache.dir'])
+					? $this->config['template.cache.dir']
+					: null
+			));
+			$this->templateEnv->addExtension(new WebApp_Twig_Extension());
+		}
+
+		$_cache = $this->config['system.cache'];
+		if (isset($_cache)) {
+			$cacheEngins = array(
+				'apc' => 'ApcCache',
+				'memcache' => 'MemcacheCache',
+				'xcache' => 'XcacheCache',
+				'array' => 'ArrayCache'
+			);
+			if (in_array($_cache, $cacheEngines)) {
+				$cacheEngine = '\Doctrine\Common\Cache\\' .
+					$cacheEngines[$_cache];
+				$this->cache = new $cacheEngine();
+				if ($_cache == 'memcache' &&
+						$_memcache = $this->cache['system.cache.memcache']) {
+					$memcache = new \Memcache($_memcache['host'],
+						$_memcache['port']);
+				}
+			}
+		}
+
+		if (isset($this->config['database'])) {
 			// entity manager
 			$ormconf = new \Doctrine\ORM\Configuration();
-			if ($config['env'] == 'development') {
+			if ($this->config['env'] == 'development') {
 				$ormcache = new \Doctrine\Common\Cache\ArrayCache();
 				$ormconf->setMetadataCacheImpl($ormcache);
 				$ormconf->setQueryCacheImpl($ormcache);
@@ -48,9 +72,9 @@ class Application
 			$ormconf->setProxyDir('model/proxy');
 			$ormconf->setProxyNamespace('model\proxy');
 
-			$connection = $config['database'];
+			$connection = $this->config['database'];
 
-			$this->_em = \Doctrine\ORM\EntityManager::create($connection, $ormconf);
+			$this->em = \Doctrine\ORM\EntityManager::create($connection, $ormconf);
 		}
 
 		$this->request = new Request();
@@ -59,8 +83,8 @@ class Application
 	public function __get($key)
 	{
 		switch ($key) {
-		case 'config': case 'em':
-			return $this->{'_'.$key};
+		case 'config': case 'em': case 'cache': case 'templateEnv':
+			return $this->{$key};
 		}
 	}
 
@@ -118,5 +142,15 @@ class Application
 		array_unshift($this->routes, $route);
 		// TODO: sort?
 	}
+
+	public function static_dir($dir) 
+	{
+		$app = $this;
+		$this->route('/' . $dir . '{path:path}', function($path) use ($app, $dir) {
+			return fpassthru(fopen(
+				$app->config['system.basedir'] . '/' . $dir . $path, 'r'));
+		});
+	}
+
 }
 ?>
