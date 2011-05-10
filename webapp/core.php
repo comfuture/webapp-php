@@ -143,13 +143,6 @@ function url_for($endpoint, $vars=null)
 {
 }
 
-function static_dir($dir, $app)
-{
-	$app->route(new webapp\Route('/' . $dir . '{path:path}', function($path) {
-		return fpassthru('/' . $dir . $path);
-	}));
-}
-
 class WebApp_Twig_Extension extends \Twig_Extension
 {
 	public function getName()
@@ -159,10 +152,11 @@ class WebApp_Twig_Extension extends \Twig_Extension
 
 	public function getGlobals()
 	{
+		return array();
 		return array(
 			'g' => WebApp::$g,
-			'get_flashed_messages' => new Twig_Function('webapp\get_flashed_messages'),
-			'url_for' => new Twig_Function('webapp\url_for')
+			'get_flashed_messages' => new \Twig_Function('webapp\get_flashed_messages'),
+			'url_for' => new \Twig_Function('webapp\url_for')
 		);
 	}
 }
