@@ -23,8 +23,9 @@ class Application
 		}
 
 		if (isset($this->config['system.template'])) {
-			$filesystemLoader = new \Twig_Loader_Filesystem('./');
-			$this->templateEnv = new \Twig_Environment($filesystemLoader, array(
+			$templateLoader = new WebApp_Twig_Loader(
+				$this->config['template.dir']);
+			$this->templateEnv = new \Twig_Environment($templateLoader, array(
 				'cache' => isset($this->config['template.cache.dir'])
 					? $this->config['template.cache.dir']
 					: null
@@ -147,8 +148,12 @@ class Application
 	{
 		$app = $this;
 		$this->route('/' . $dir . '{path:path}', function($path) use ($app, $dir) {
-			return fpassthru(fopen(
-				$app->config['system.basedir'] . '/' . $dir . $path, 'r'));
+			$file = $app->config['system.basedir'] . '/' . $dir . $path;
+			if (is_file($file)) {
+				$info = FileInfo::getType($file);
+				header('Content-Type: ' . $info);
+				return fpassthru(fopen($file, 'r'));
+			}
 		});
 	}
 

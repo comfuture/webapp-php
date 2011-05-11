@@ -70,14 +70,7 @@ class Controller
 			throw new Exception("application is not set");
 		if (!$vars)
 			$vars = array();
-		if (false !== strpos($tpl, ':')) {
-			//each($name, $path) 
-			$arr = explode(':', $tpl, 2);
-			$name = $arr[0]; $path = $arr[1];
-			$ctrl = $this->app->getController($name);
-			$tpl = $ctrl->dirname() . '/' . $path;
-		}
-		$template = $this->app->templateEnv->loadTemplate('templates/' . $tpl);
+		$template = $this->app->templateEnv->loadTemplate($tpl);
 		return $template->render($vars);
 	}
 

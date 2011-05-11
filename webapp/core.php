@@ -143,6 +143,62 @@ function url_for($endpoint, $vars=null)
 {
 }
 
+class WebApp_Twig_Loader implements \Twig_LoaderInterface
+{
+	private $tempalteDir;
+	private $loaders = array();
+
+	function __construct($templateDir='.')
+	{
+		$this->templateDir = $templateDir;
+	}
+
+	public function getSource($name)
+	{
+		list(,$path) = $this->parts($name);
+		return $this->getLoader($name)->getSource($path);
+	}
+
+	public function getCacheKey($name)
+	{
+		list(,$path) = $this->parts($name);
+		return $this->getLoader($name)->getCacheKey($path);
+	}
+
+	public function isFresh($name, $time)
+	{
+		list(,$path) = $this->parts($name);
+		return $this->getLoader($name)->isFresh($path, $time);
+	}
+
+	private function parts($name)
+	{
+		list($module, $path) = explode(':', $name);
+		if (!$path) {
+			$path = $module;
+			$module = null;
+		}
+		return array($module, $path);
+	}
+
+	private function getLoader($name)
+	{
+		list($module, $path) = $this->parts($name);
+		if ($module) {
+			$tpldir = './' . $module . '/' . $this->templateDir;
+		} else {
+			$tpldir = './' . $this->templateDir;
+		}
+		if (array_key_exists($tpldir, $this->loaders)) {
+			$loader = $this->loaders[$tpldir];
+		} else {
+			$loader = new \Twig_Loader_Filesystem($tpldir);
+			$this->loaders[$tpldir] = $loader;
+		}
+		return $loader;
+	}
+}
+
 class WebApp_Twig_Extension extends \Twig_Extension
 {
 	public function getName()
