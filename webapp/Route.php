@@ -18,7 +18,7 @@ namespace webapp
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
 			$this->regex = '#^' . $this->pattern;
-			if (preg_match_all($reVars, $pattern, &$matches, PREG_SET_ORDER)) {
+			if (preg_match_all($reVars, $pattern, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					if ($match['converter']) {
 						switch ($match['converter']) {
@@ -52,7 +52,7 @@ namespace webapp
 		public function test($path)
 		{
 			if (preg_match_all($this->regex, $path,
-				&$matches, PREG_SET_ORDER)) {
+				$matches, PREG_SET_ORDER)) {
 				$param = $matches[0];
 				array_shift($param);
 				return $param;
