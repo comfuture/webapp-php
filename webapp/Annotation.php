@@ -35,14 +35,30 @@ namespace
 	// forms
 	class Form extends Annotation
 	{
+		public $action;
+		public $method;
+	}
+
+	class FormItem extends Annotation
+	{
 		public $type;
+		public $name;
 		public $label;
+		public $options;
 		public $readonly;
+		public $layout;
 	}
 
 	class Column extends Annotation
 	{
 		public $length;
+		public $type;
+
+		public $unique;
+	}
+
+	class Id extends Annotation
+	{
 	}
 }
 ?>
