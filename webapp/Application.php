@@ -104,7 +104,7 @@ class Application
 					echo $response;
 				}
 				return;
-			} else if ($route->pattern{-1} != '/') {
+			} else if (substr($route->getPattern(), -1) != '/') {
 				$trailSlashes[] = $route->pattern . '/';
 			}
 		}
