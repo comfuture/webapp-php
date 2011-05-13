@@ -94,6 +94,8 @@ class Application
 		foreach ($this->beforeRequest as $handler) {
 			call_user_func($handler);
 		}
+
+		$trailSlashes = array();
 		foreach ($this->routes as $route) {
 			$params = $route->test($this->request->path);
 			if (false !== $params) {
@@ -102,7 +104,14 @@ class Application
 					echo $response;
 				}
 				return;
+			} else if ($route->pattern{-1} != '/') {
+				$trailSlashes[] = $route->pattern . '/';
 			}
+		}
+
+		// redirect with trail slashes
+		if (in_array($this->request->path . '/', $trailSlashes)) {
+			redirect($this->request->path . '/');
 		}
 	}
 
