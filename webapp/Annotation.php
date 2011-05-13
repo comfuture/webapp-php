@@ -5,7 +5,7 @@ namespace
 
         class Route extends Annotation
         {     
-                public $method = 'GET';
+                public $methods = array('GET');
         }
 
 	class BeforeRequest extends Annotation
