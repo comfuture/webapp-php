@@ -42,7 +42,7 @@ class DirectoryDispatcher extends Dispatcher
 			return;
 
 		$ns = $path[1];
-		$dir = $this->app->config['basedir'] . '/' . $ns;
+		$dir = $this->app->config['system.basedir'] . '/' . $ns;
 		if (is_dir($dir) && is_file($file = $dir . '/controller.php')) {
 			require_once $file;
 			$klass = $ns . '\Controller';
