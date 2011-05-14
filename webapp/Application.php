@@ -113,8 +113,7 @@ class Application
 				$trailSlashes[] = $this->request->path . '/';
 			}
 		}
-		print_r($this->request->method);
-		return;
+
 		// redirect with trail slashes
 		if (in_array($this->request->path . '/', $trailSlashes)) {
 			redirect($this->request->path . '/');
