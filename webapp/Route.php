@@ -20,7 +20,7 @@ namespace webapp
 				$this->methods = $methods;
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
-			$this->regex = '#^' . $this->pattern;
+			$this->regex = '#^' . preg_quote($this->pattern, '#');
 			if (preg_match_all($reVars, $pattern, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					if ($match['converter']) {
@@ -41,7 +41,7 @@ namespace webapp
 
 				}
 			}
-			$this->regex = str_replace('*', '.*', $this->regex);
+			$this->regex = str_replace('%', '.*', $this->regex);
 			$this->regex .= '$#';
 		}
 
