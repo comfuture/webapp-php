@@ -123,7 +123,8 @@ function register_package($ns)
 		if (file_exists($file = dirname(__FILE__) . '/' . str_replace('\\', '/', $class).'.php')) {
 			require $file;
 		} 
-	}
+	};
+	
 	spl_autoload_register($loader);
 }
 
