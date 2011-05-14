@@ -3,7 +3,7 @@ namespace webapp
 {
 	class Route
 	{
-		private static $convertFunctions = array();
+		protected static $convertFunctions = array();
 		private $handler = null;
 		private $pattern = '';
 		private $regex = '';
@@ -68,9 +68,10 @@ namespace webapp
 				in_array($method, $this->methods)) {
 				$param = $matches[0];
 				array_shift($param);
-				array_map(function($v, $c) {
-					if (in_array($c, static::$convertFunctions))
-						return static::$convertFunctions[$c]($v);
+				$fn = self::$convertFunctions;
+				array_map(function($v, $c) use($fn) {
+					if (in_array($c, $fn))
+						return $fn[$c]($v);
 					return $v;
 				}, $param, $this->converters);
 				return $param;

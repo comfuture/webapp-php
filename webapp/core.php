@@ -75,6 +75,8 @@ class Request
 	public function __get($key)
 	{
 		switch ($key) {
+		case 'method':
+			return $_SERVER['REQUEST_METHOD'];
 		case 'host':
 			return $_SERVER['HTTP_HOST'];
 		case 'path':
