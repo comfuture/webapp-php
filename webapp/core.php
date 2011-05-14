@@ -114,6 +114,19 @@ class Response
 	}
 }
 
+function register_package($ns)
+{
+	$loader = function($class) use ($ns) {
+		if (0 !== strpos($class, $ns . '\\')) {
+			return;
+		}	 
+		if (file_exists($file = dirname(__FILE__) . '/' . str_replace('\\', '/', $class).'.php')) {
+			require $file;
+		} 
+	}
+	spl_autoload_register($loader);
+}
+
 // message flashing
 // @see http://flask.pocoo.org/docs/api/#message-flashing
 
