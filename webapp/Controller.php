@@ -51,9 +51,11 @@ class Controller
 
 			if ($method->hasAnnotation('Route')) {
 				$annotation = $method->getAnnotation('Route');
+				if (!$annotation->methods)
+					$annotation->methods = array('GET');
 				$route = new Route(
 					($this->route ? $this->route->getPattern() : '') . $annotation->value,
-					array(&$this, $method->name), $annotation->method || 'GET');
+					array(&$this, $method->name), $annotation->methods);
 				$this->app->route($route);
 			}
 		}

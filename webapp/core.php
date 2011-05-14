@@ -146,6 +146,7 @@ function get_flashed_messages($with_category=false)
 function redirect($url, $code='302')
 {
 	header('Location: ' . $url, true, $code);
+	exit;
 }
 
 function url_for($endpoint, $vars=null)

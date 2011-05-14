@@ -10,13 +10,14 @@ namespace webapp
 		private $converters = array();
 		private $methods = array('GET');
 
-		function __construct($pattern, $handler, $methods=array('GET'))
+		function __construct($pattern, $handler, $methods=null)
 		{
 			if ($pattern{0} !== '/')
 				throw new \Exception('pattern must starts with "/"');
 			$this->pattern = $pattern;
 			$this->handler = $handler;
-			$this->methods = $methods;
+			if (null != $methods)
+				$this->methods = $methods;
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
 			$this->regex = '#^' . $this->pattern;
