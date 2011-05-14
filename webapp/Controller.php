@@ -59,9 +59,11 @@ class Controller
 		}
 	}
 
-	protected function redirect($path)
+	protected function redirect($path, $code=302)
 	{
-		header('Location: ' . $path);
+		$response = new Response();
+		$response->headers[] = array('Location: ' . $path, true, $code);
+		return $response;
 	}
 
 	protected function render_template($tpl, $vars=null)

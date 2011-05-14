@@ -3,18 +3,24 @@ namespace webapp
 {
 	class Route
 	{
+		private static $convertFunctions = array(
+			'int' => function($v) {
+				return (int) $v;
+			}
+		);
 		private $handler = null;
 		private $pattern = '';
 		private $regex = '';
-		private $method = 'GET';
+		private $converters = array();
+		private $methods = array('GET');
 
-		function __construct($pattern, $handler, $method='GET')
+		function __construct($pattern, $handler, $methods=array('GET'))
 		{
 			if ($pattern{0} !== '/')
 				throw new \Exception('pattern must starts with "/"');
 			$this->pattern = $pattern;
 			$this->handler = $handler;
-			$this->method = $method;
+			$this->methods = $methods;
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
 			$this->regex = '#^' . $this->pattern;
@@ -24,19 +30,27 @@ namespace webapp
 						switch ($match['converter']) {
 						case 'int:':
 							$this->regex = str_replace($match[0], '([0-9]+)', $this->regex);
+							$this->converters[] = 'int';
 							break;
 						case 'path:':
 							$this->regex = str_replace($match[0], '(.+)', $this->regex);
+							$this->converters[] = 'path';
 							break;
 						}
 					} else {
 						$this->regex = str_replace($match[0], '([^/$]+)', $this->regex);
+						$this->converters[] = 'str';
 					}
 
 				}
 			}
 			$this->regex = str_replace('*', '.*', $this->regex);
 			$this->regex .= '$#';
+		}
+
+		public function registerConvertFunction($name, $func)
+		{
+			static::$convertFunctions[$name] = $func;
 		}
 
 		public function getPattern()
@@ -49,12 +63,19 @@ namespace webapp
 			return $this->regex;
 		}
 
-		public function test($path)
+		public function test($request)
 		{
-			if (preg_match_all($this->regex, $path,
-				$matches, PREG_SET_ORDER)) {
+			$path = $request->path;
+			$method = $request->method;
+			if (preg_match_all($this->regex, $path, $matches, PREG_SET_ORDER) &&
+				in_array($method, $this->methods)) {
 				$param = $matches[0];
 				array_shift($param);
+				array_map(function($v, $c) {
+					if (in_array($c, static::$convertFunctions))
+						return static::$convertFunctions[$c]($v);
+					return $v;
+				}, $param, $this->converters);
 				return $param;
 			}
 			return false;
@@ -64,6 +85,9 @@ namespace webapp
 		{
 			if (null === $params)
 				$params = array();
+			foreach ($params as $param) {
+				$converter = array_shift($this->converters);
+			}
 			return call_user_func_array($this->handler, $params);
 		}
 	}

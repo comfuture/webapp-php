@@ -97,15 +97,20 @@ class Application
 
 		$trailSlashes = array();
 		foreach ($this->routes as $route) {
-			$params = $route->test($this->request->path);
+			$params = $route->test($this->request);
 			if (false !== $params) {
 				$response = $route->handle($params);
 				if (is_string($response)) {
 					echo $response;
+				} else if (is_a($response, 'webapp\Response')) {
+					foreach ($response->headers as $header) {
+						call_user_func_array('header', (array) $header);
+					}
+					echo $response->body;
 				}
 				return;
-			} else if (substr($route->getPattern(), -1) != '/') {
-				$trailSlashes[] = $route->pattern . '/';
+			} else if (substr($route->getPattern(), -1) == '/') {
+				$trailSlashes[] = $this->request->path . '/';
 			}
 		}
 
