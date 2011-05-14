@@ -36,6 +36,10 @@ class WebApp
 		//// register twig autoloader
 		\Twig_Autoloader::register();
 
+		//// register int parameter converter
+		Route::registerConvertFunction('int', function($v) {
+			return (int) $v;
+		});    
 	}
 
 	public static function autoload($class)

@@ -3,11 +3,7 @@ namespace webapp
 {
 	class Route
 	{
-		private static $convertFunctions = array(
-			'int' => function($v) {
-				return (int) $v;
-			}
-		);
+		private static $convertFunctions = array();
 		private $handler = null;
 		private $pattern = '';
 		private $regex = '';
@@ -93,3 +89,4 @@ namespace webapp
 	}
 }
 
+?>
