@@ -171,5 +171,21 @@ class Application
 		});
 	}
 
+	public function register_package($ns)
+	{
+		$app = $this;
+		$loader = function($class) use ($ns, $app) {
+			if (0 !== strpos($class, $ns . '\\')) {
+				return;
+			}
+			$file = $app->config['system.basedir'] . '/' . str_replace('\\', '/', $class).'.php';
+			if (file_exists($file)) {
+				require $file;
+			}     
+		};    
+		      
+		spl_autoload_register($loader);
+	}
+
 }
 ?>
