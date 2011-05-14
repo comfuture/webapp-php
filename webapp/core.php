@@ -38,7 +38,7 @@ class WebApp
 
 		//// register int parameter converter
 		Route::registerConvertFunction('int', function($v) {
-			return (int) $v;
+			return intval($v);
 		});    
 	}
 

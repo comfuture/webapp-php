@@ -100,7 +100,7 @@ class Application
 			$params = $route->test($this->request);
 			if (false !== $params) {
 				$response = $route->handle($params);
-				if (is_string($response)) {
+				if (is_string($response) || is_numeric($response)) {
 					echo $response;
 				} else if (is_a($response, 'webapp\Response')) {
 					foreach ($response->headers as $header) {
@@ -113,6 +113,7 @@ class Application
 				$trailSlashes[] = $this->request->path . '/';
 			}
 		}
+		return;
 
 		// redirect with trail slashes
 		if (in_array($this->request->path . '/', $trailSlashes)) {

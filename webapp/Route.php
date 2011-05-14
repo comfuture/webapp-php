@@ -20,7 +20,9 @@ namespace webapp
 				$this->methods = $methods;
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
-			$this->regex = '#^' . preg_quote($this->pattern, '#');
+			// + * ? [ ^ ] $ ( ) { } = ! < > | : -
+			$_pattern = preg_replace('/\+\*\[\]\$\(\)\./', '\$0', $this->pattern);
+			$this->regex = '#^' . $_pattern;
 			if (preg_match_all($reVars, $pattern, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					if ($match['converter']) {
@@ -69,9 +71,10 @@ namespace webapp
 				$param = $matches[0];
 				array_shift($param);
 				$fn = self::$convertFunctions;
-				array_map(function($v, $c) use($fn) {
-					if (in_array($c, $fn))
+				$param = array_map(function($v, $c) use($fn) {
+					if (in_array($c, array_keys($fn))) {
 						return $fn[$c]($v);
+					}
 					return $v;
 				}, $param, $this->converters);
 				return $param;
@@ -83,9 +86,6 @@ namespace webapp
 		{
 			if (null === $params)
 				$params = array();
-			foreach ($params as $param) {
-				$converter = array_shift($this->converters);
-			}
 			return call_user_func_array($this->handler, $params);
 		}
 	}
