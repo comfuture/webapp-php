@@ -70,12 +70,7 @@ class Controller
 
 	protected function render_template($tpl, $vars=null)
 	{
-		if (!$this->app)
-			throw new Exception("application is not set");
-		if (!$vars)
-			$vars = array();
-		$template = $this->app->templateEnv->loadTemplate($tpl);
-		return $template->render($vars);
+		return $this->app->render_template($tpl, $vars);
 	}
 
 	protected function jsonify($var)
