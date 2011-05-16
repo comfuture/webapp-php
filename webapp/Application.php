@@ -141,24 +141,31 @@ class Application
 		$this->beforeRequest[] = $handler;
 	}
 
-	public function route($route, $handler=null, $method=null)
+	public function route($route, $handler=null, $methods=null)
 	{
 		if (is_a($route, 'webapp\Route')) {
 			if (null != $handler) {
 				// TODO: implement Route::setHandler()
 				//$route->setHandler($handler);
 			}
-			if (null != $method) {
+			if (null != $methods) {
 				// TODO: implement Route::setMethod()
 				//$route->setMethod($method);
 			}
 		} else if (is_string($route) && null != $handler) {
-			$route = new Route($route, $handler, $method);
+			$route = new Route($route, $handler, $methods);
 		} else {
 			throw new \Exception('$route must be one of webapp\Route or string');
 		}
 		array_unshift($this->routes, $route);
 		// TODO: sort?
+	}
+
+	protected function redirect($path, $code=302)
+	{
+		$response = new Response();
+		$response->headers[] = array('Location: ' . $path, true, $code);
+		return $response;
 	}
 
         public function render_template($tpl, $vars=null)

@@ -48,6 +48,8 @@ class Form
 
 		$this->items = array();
 		foreach ($this->klass->getProperties() as $prop) {
+			if (substr($prop->getName(), 0, 1) == '_')
+				continue;
 			$item = new FormItem();
 			$item->name = $prop->getName();
 			if ($prop->hasAnnotation('FormItem')) {
@@ -68,7 +70,10 @@ class Form
 				} else if ($prop->hasAnnotation('Column')) {
 					$column = $prop->getAnnotation('Column');
 					if (isset($column->type)) {
-						$item->type = $column->type;
+						if ($column->type == 'text')
+							$item->type = 'textarea';
+						else
+							$item->type = $column->type;
 					} else {
 						$item->type = 'text';
 					}
@@ -137,12 +142,15 @@ class FormItem
 			$this->type = 'text';
 		}
 		switch ($this->type) {
-		case 'string': case 'hidden':
+		case 'string': case 'hidden': case 'password':
 		case 'text': case 'number': case 'range': case 'email': case 'date':
 			$input = $el->addChild('input');
 			$input['type'] = $this->type;
 			$input['name'] = $input['id'] = $this->name;
 			break;
+		case 'textarea':
+			$input = $el->addChild('textarea', '');
+			$input['name'] = $input['id'] = $this->name;
 		case 'radio': case 'checkbox':
 			if (is_array($this->options)) {
 				$i = 0;

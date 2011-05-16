@@ -23,7 +23,7 @@ namespace webapp
 			// + * ? [ ^ ] $ ( ) { } = ! < > | : -
 			$_pattern = preg_replace('/\+\*\[\]\$\(\)\./', '\$0', $this->pattern);
 			$this->regex = '#^' . $_pattern;
-			if (preg_match_all($reVars, $pattern, $matches, PREG_SET_ORDER)) {
+			if (preg_match_all($reVars, $_pattern, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $match) {
 					if ($match['converter']) {
 						switch ($match['converter']) {

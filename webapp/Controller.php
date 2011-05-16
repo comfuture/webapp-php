@@ -9,6 +9,7 @@ class Controller
 	protected $name;
 	protected $app;
 	protected $route;
+	protected $request;
 
 	function __construct($name=null)
 	{
@@ -27,6 +28,7 @@ class Controller
 		if (!is_a($app, 'webapp\Application'))
 			throw new \Exception("not valid application");
 		$this->app = $app;
+		$this->request = $app->request;
 		$this->parseAnnotations();
 	}
 
