@@ -95,21 +95,31 @@ class Request
 
 class Response
 {
-	private $_headers = array();
-	private $_body = '';
+	public $headers = array();	// stupid php!
+	private $body = '';
+
+	function __construct($body='', $headers=array())
+	{
+		$this->body = $body;
+		$this->headers = array_merge($this->headers, $headers);
+	}
 
 	public function __isset($key)
 	{
-		return in_array($key, 'headers', 'body');
+		return in_array($key, array('headers', 'body'));
 	}
 
 	public function __get($key)
 	{
-		switch ($key) {
-		case 'headers':
-			return $this->_headers;
-		case 'body':
-			return $this->_body;
+		if (isset($this->{$key})) {
+			return $this->{$key};
+		}
+	}
+
+	public function __set($key, $value)
+	{
+		if (isset($this->{$key})) {
+			$this->{$key} = $value;
 		}
 	}
 }

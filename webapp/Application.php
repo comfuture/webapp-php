@@ -2,6 +2,7 @@
 namespace webapp;
 
 require_once dirname(__FILE__) . '/core.php';
+require_once dirname(__FILE__) . '/builtins.php';
 
 class Application
 {
@@ -78,7 +79,7 @@ class Application
 			$this->em = \Doctrine\ORM\EntityManager::create($connection, $ormconf);
 		}
 
-		$this->route(bulitins());
+		$this->route(builtins());
 
 		$this->request = new Request();
 	}
