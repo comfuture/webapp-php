@@ -1,0 +1,3 @@
+[submodule "webapp/vendor/DataTables"]
+	path = webapp/vendor/DataTables
+	url = git://github.com/DataTables/DataTables.git

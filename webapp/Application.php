@@ -78,6 +78,8 @@ class Application
 			$this->em = \Doctrine\ORM\EntityManager::create($connection, $ormconf);
 		}
 
+		$this->route(bulitins());
+
 		$this->request = new Request();
 	}
 
