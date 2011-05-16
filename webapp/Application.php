@@ -112,7 +112,7 @@ class Application
 					echo $response->body;
 				}
 				return;
-			} else if (substr($route->getPattern(), -1) == '/') {
+			} else if (substr($route->request->path, -1) == '/') {
 				$trailSlashes[] = $this->request->path . '/';
 			}
 		}
