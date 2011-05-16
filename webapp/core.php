@@ -82,7 +82,7 @@ class Request
 		case 'path':
 			return $_SERVER['PATH_INFO'];
 		case 'param':
-			return $_param;
+			return $this->_param;
 		case 'cookie':
 			return $_COOKIE;
 		case 'session':
