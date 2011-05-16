@@ -113,7 +113,6 @@ class Application
 				$trailSlashes[] = $this->request->path . '/';
 			}
 		}
-		return;
 
 		// redirect with trail slashes
 		if (in_array($this->request->path . '/', $trailSlashes)) {
@@ -158,6 +157,14 @@ class Application
 		array_unshift($this->routes, $route);
 		// TODO: sort?
 	}
+
+        public function render_template($tpl, $vars=null)
+        {     
+                if (!$vars)
+                        $vars = array();
+                $template = $this->templateEnv->loadTemplate($tpl);
+                return $template->render($vars);
+        }     
 
 	public function static_dir($dir) 
 	{
