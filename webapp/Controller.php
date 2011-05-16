@@ -37,8 +37,10 @@ class Controller
 		// 1. determine base route
 		if ($klass->hasAnnotation('Route')) {
 			$annotation = $klass->getAnnotation('Route');
+			if (!$annotation->methods)
+				$annotation->methods = array('GET');
 			$route = new Route($annotation->value, 
-				array(&$this, 'index'), $annotation->method || 'GET');
+				array(&$this, 'index'), $annotation->methods);
 			$this->route = $route;
 			$this->app->route($route);
 		}
