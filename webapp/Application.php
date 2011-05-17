@@ -110,11 +110,20 @@ class Application
 						call_user_func_array('header', (array) $header);
 					}
 					echo $response->body;
+				} else {
+					$format = best_match($this->request->accept);
+					$options = $route->getOptions();
+					$availTypes = array_keys($options['template']);
+					if (in_array($format[1], $availTypes)) {
+						$tpl = $options['template'][$format[1]];
+						echo $this->render_template($tpl, $response);
+					}
+					echo $this->jsonify($response);
 				}
 				return;
 			} else if (substr($route->request->path, -1) == '/') {
 				$trailSlashes[] = $this->request->path . '/';
-			}
+			} 
 		}
 
 		// redirect with trail slashes
@@ -141,7 +150,7 @@ class Application
 		$this->beforeRequest[] = $handler;
 	}
 
-	public function route($route, $handler=null, $methods=null)
+	public function route($route, $handler=null, $methods=null, $options=null)
 	{
 		if (is_a($route, 'webapp\Route')) {
 			if (null != $handler) {
@@ -153,7 +162,7 @@ class Application
 				//$route->setMethod($method);
 			}
 		} else if (is_string($route) && null != $handler) {
-			$route = new Route($route, $handler, $methods);
+			$route = new Route($route, $handler, $methods, $options);
 		} else {
 			throw new \Exception('$route must be one of webapp\Route or string');
 		}
@@ -174,7 +183,12 @@ class Application
                         $vars = array();
                 $template = $this->templateEnv->loadTemplate($tpl);
                 return $template->render($vars);
-        }     
+	}
+
+	public function jsonify($obj)
+	{
+		return json_encode($obj);
+	}
 
 	public function static_dir($dir) 
 	{

@@ -39,7 +39,7 @@ class WebApp
 		//// register int parameter converter
 		Route::registerConvertFunction('int', function($v) {
 			return intval($v);
-		});    
+		});	
 	}
 
 	public static function autoload($class)
@@ -69,7 +69,7 @@ class Request
 	public function __isset($key)
 	{
 		return in_array($key, array('host', 'path', 'param',
-			'cookie', 'session', 'body'));
+			'accept', 'cookie', 'session', 'body'));
 	}
 
 	public function __get($key)
@@ -83,6 +83,8 @@ class Request
 			return $_SERVER['PATH_INFO'];
 		case 'param':
 			return $this->_param;
+		case 'accept':
+			return $_SERVER['HTTP_ACCEPT'];
 		case 'cookie':
 			return $_COOKIE;
 		case 'session':
@@ -122,6 +124,13 @@ class Response
 			$this->{$key} = $value;
 		}
 	}
+}
+
+function best_match($request)
+{
+	//return array('application/html', 'html');
+	return array('application/json', 'json');
+	return parse_accept_headers($request->accept);
 }
 
 // message flashing

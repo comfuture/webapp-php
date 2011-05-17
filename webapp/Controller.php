@@ -53,13 +53,26 @@ class Controller
 				$this->app->addBeforeRequest(array(&$this, $method->name));
 			}
 
+			$options = array('template'=>array());
+
+			if ($method->hasAnnotation('Template')) {
+				$templates = $method->getAnnotations('Template');
+				foreach ($templates as $template) {
+					if ($template->type)
+						$type = $template->type;
+					else
+						$type = 'html';
+					$options['template'][$type] = $template->value;
+				}
+			}
+
 			if ($method->hasAnnotation('Route')) {
 				$annotation = $method->getAnnotation('Route');
 				if (!$annotation->methods)
 					$annotation->methods = array('GET');
 				$route = new Route(
 					($this->route ? $this->route->getPattern() : '') . $annotation->value,
-					array(&$this, $method->name), $annotation->methods);
+					array(&$this, $method->name), $annotation->methods, $options);
 				$this->app->route($route);
 			}
 		}

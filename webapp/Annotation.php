@@ -6,7 +6,12 @@ namespace
         class Route extends Annotation
         {     
                 public $methods = array('GET');
-        }
+	}
+
+	class Template extends Annotation
+	{
+		public $type;
+	}
 
 	class BeforeRequest extends Annotation
 	{

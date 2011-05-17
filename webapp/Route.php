@@ -9,8 +9,9 @@ namespace webapp
 		private $regex = '';
 		private $converters = array();
 		private $methods = array('GET');
+		private $options;
 
-		function __construct($pattern, $handler, $methods=null)
+		function __construct($pattern, $handler, $methods=null, $options=null)
 		{
 			if ($pattern{0} !== '/')
 				throw new \Exception('pattern must starts with "/"');
@@ -18,6 +19,8 @@ namespace webapp
 			$this->handler = $handler;
 			if (null != $methods)
 				$this->methods = $methods;
+			if (null != $options)
+				$this->options = $options;
 
 			$reVars = '#{(?:(?P<converter>[^:}]+:)?(?P<variable>[^}]+))}#';
 			// + * ? [ ^ ] $ ( ) { } = ! < > | : -
@@ -60,6 +63,11 @@ namespace webapp
 		public function getRegEx()
 		{
 			return $this->regex;
+		}
+
+		public function getOptions()
+		{
+			return $this->options;
 		}
 
 		public function test($request)
