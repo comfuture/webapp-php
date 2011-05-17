@@ -21,7 +21,10 @@ function _wa($path)
 		if ($tail == 'theme.css')
 			$file = dirname(__FILE__) . '/vendor/aristo/css/Aristo/jquery-ui-1.8.7.custom.css';
 		else
-			$file = dirname(__FILE__) . '/vendor/aristo/css/Aristo/' . $path;
+			$file = dirname(__FILE__) . '/vendor/aristo/css/Aristo/' . $tail;
+		break;
+	case 'ckeditor':
+		$file = dirname(__FILE__) . '/vendor/ckeditor/' . $tail;
 		break;
 	}
 	if (is_file($file)) {
