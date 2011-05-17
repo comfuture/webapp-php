@@ -14,6 +14,15 @@ function _wa($path)
 	case 'tokeninput':
 		$file = dirname(__FILE__) . '/vendor/jquery-tokeninput/' . $tail;
 		break;
+	case 'fileuploader.js': case 'fileuploader.css':
+		$file = dirname(__FILE__) . '/vendor/file-uploader/client/' . $path;
+		break;
+	case 'aristo':
+		if ($tail == 'theme.css')
+			$file = dirname(__FILE__) . '/vendor/aristo/css/Aristo/jquery-ui-1.8.7.custom.css';
+		else
+			$file = dirname(__FILE__) . '/vendor/aristo/css/Aristo/' . $path;
+		break;
 	}
 	if (is_file($file)) {
 		$info = FileInfo::getType($file);

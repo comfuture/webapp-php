@@ -1,3 +1,9 @@
 [submodule "webapp/vendor/DataTables"]
 	path = webapp/vendor/DataTables
 	url = git://github.com/DataTables/DataTables.git
+[submodule "webapp/vendor/file-uploader"]
+	path = webapp/vendor/file-uploader
+	url = git://github.com/valums/file-uploader.git
+[submodule "webapp/vendor/aristo"]
+	path = webapp/vendor/aristo
+	url = git://github.com/taitems/Aristo-jQuery-UI-Theme.git
