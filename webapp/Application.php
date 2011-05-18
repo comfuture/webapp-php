@@ -113,8 +113,8 @@ class Application
 				} else {
 					$format = best_match($this->request->accept);
 					$options = $route->getOptions();
-					$availTypes = array_keys($options['template']);
-					if (in_array($format[1], $availTypes)) {
+					$availTypes = @array_keys($options['template']);
+					if ($availTypes && in_array($format[1], $availTypes)) {
 						$tpl = $options['template'][$format[1]];
 						echo $this->render_template($tpl, $response);
 					}

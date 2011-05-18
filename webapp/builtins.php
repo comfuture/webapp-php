@@ -14,7 +14,7 @@ function _wa($path)
 	case 'tokeninput':
 		$file = dirname(__FILE__) . '/vendor/jquery-tokeninput/' . $tail;
 		break;
-	case 'fileuploader.js': case 'fileuploader.css':
+	case 'fileuploader.js': case 'fileuploader.css': case 'loading.gif':
 		$file = dirname(__FILE__) . '/vendor/file-uploader/client/' . $path;
 		break;
 	case 'aristo':
