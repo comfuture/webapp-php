@@ -196,7 +196,8 @@ class Application
 		$this->route('/' . $dir . '{path:path}', function($path) use ($app, $dir) {
 			$file = $app->config['system.basedir'] . '/' . $dir . $path;
 			if (is_file($file)) {
-				$info = FileInfo::getType($file);
+				$fi = new FileInfo($file);
+				$info = $fi->getType();
 				header('Content-Type: ' . $info);
 				return fpassthru(fopen($file, 'r'));
 			}
