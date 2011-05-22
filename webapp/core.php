@@ -36,6 +36,12 @@ class WebApp
 		//// register twig autoloader
 		\Twig_Autoloader::register();
 
+		//// register yaml parser
+		spl_autoload_register(function($class) {
+			if ($class == 'sfYaml')
+				require_once dirname(__FILE__) . '/vendor/fabpot-yaml/lib/sfYaml.php';
+		});
+
 		//// register int parameter converter
 		Route::registerConvertFunction('int', function($v) {
 			return intval($v);
