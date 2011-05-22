@@ -28,7 +28,8 @@ function _wa($path)
 		break;
 	}
 	if (is_file($file)) {
-		$info = FileInfo::getType($file);
+		$fi = new FileInfo($file);
+		$info = $fi->getType();
 		$response->headers[] = 'Content-Type: ' . $info;
 		$response->body = file_get_contents($file);
 		return $response;
